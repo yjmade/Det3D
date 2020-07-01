@@ -2,14 +2,14 @@
 #include <torch/extension.h>
 
 
-#define CHECK_CUDA(x) AT_CHECK(x.type().is_cuda(), #x, " must be a CUDAtensor ")
-#define CHECK_CONTIGUOUS(x) AT_CHECK(x.is_contiguous(), #x, " must be contiguous ")
+#define CHECK_CUDA(x) TORCH_CHECK(x.type().is_cuda(), #x, " must be a CUDAtensor ")
+#define CHECK_CONTIGUOUS(x) TORCH_CHECK(x.is_contiguous(), #x, " must be contiguous ")
 #define CHECK_INPUT(x) CHECK_CUDA(x);CHECK_CONTIGUOUS(x)
 
-void roipool3dLauncher_slow(int batch_size, int pts_num, int boxes_num, int feature_in_len, int sampled_pts_num, 
+void roipool3dLauncher_slow(int batch_size, int pts_num, int boxes_num, int feature_in_len, int sampled_pts_num,
                            const float *xyz, const float *boxes3d, const float *pts_feature, float *pooled_features, int *pooled_empty_flag);
 
-void roipool3dLauncher(int batch_size, int pts_num, int boxes_num, int feature_in_len, int sampled_pts_num, 
+void roipool3dLauncher(int batch_size, int pts_num, int boxes_num, int feature_in_len, int sampled_pts_num,
                        const float *xyz, const float *boxes3d, const float *pts_feature, float *pooled_features, int *pooled_empty_flag);
 
 int roipool3d_gpu_slow(at::Tensor xyz, at::Tensor boxes3d, at::Tensor pts_feature, at::Tensor pooled_features, at::Tensor pooled_empty_flag){
@@ -37,7 +37,7 @@ int roipool3d_gpu_slow(at::Tensor xyz, at::Tensor boxes3d, at::Tensor pts_featur
     float * pooled_features_data = pooled_features.data<float>();
     int * pooled_empty_flag_data = pooled_empty_flag.data<int>();
 
-    roipool3dLauncher_slow(batch_size, pts_num, boxes_num, feature_in_len, sampled_pts_num, 
+    roipool3dLauncher_slow(batch_size, pts_num, boxes_num, feature_in_len, sampled_pts_num,
                            xyz_data, boxes3d_data, pts_feature_data, pooled_features_data, pooled_empty_flag_data);
 
     return 1;
@@ -70,10 +70,10 @@ int roipool3d_gpu(at::Tensor xyz, at::Tensor boxes3d, at::Tensor pts_feature, at
     float * pooled_features_data = pooled_features.data<float>();
     int * pooled_empty_flag_data = pooled_empty_flag.data<int>();
 
-    roipool3dLauncher(batch_size, pts_num, boxes_num, feature_in_len, sampled_pts_num, 
+    roipool3dLauncher(batch_size, pts_num, boxes_num, feature_in_len, sampled_pts_num,
                        xyz_data, boxes3d_data, pts_feature_data, pooled_features_data, pooled_empty_flag_data);
-    
-    
+
+
 
     return 1;
 }

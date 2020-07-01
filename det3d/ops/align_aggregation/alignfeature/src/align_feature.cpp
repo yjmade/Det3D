@@ -32,16 +32,16 @@ int align_feature_cuda_backward_launcher(
     at::Tensor grad_weight);
 
 
-#define CHECK_CUDA(x) AT_CHECK(x.type().is_cuda(), #x, " must be a CUDAtensor ")
+#define CHECK_CUDA(x) TORCH_CHECK(x.type().is_cuda(), #x, " must be a CUDAtensor ")
 #define CHECK_CONTIGUOUS(x) \
-  AT_CHECK(x.is_contiguous(), #x, " must be contiguous ")
+  TORCH_CHECK(x.is_contiguous(), #x, " must be contiguous ")
 #define CHECK_INPUT(x) \
   CHECK_CUDA(x);       \
   CHECK_CONTIGUOUS(x)
 
-int align_feature_cuda_forward(at::Tensor data, 
-                               at::Tensor weight, 
-                               int weight_height, 
+int align_feature_cuda_forward(at::Tensor data,
+                               at::Tensor weight,
+                               int weight_height,
                                int weight_width,
                                at::Tensor output) {
 
@@ -78,8 +78,8 @@ int align_feature_cuda_backward(at::Tensor top_grad,
     CHECK_INPUT(grad_data);
     CHECK_INPUT(grad_weight);
 
-   
-    align_feature_cuda_backward_launcher(top_grad, data, weight, weight_height, weight_width, 
+
+    align_feature_cuda_backward_launcher(top_grad, data, weight, weight_height, weight_width,
                                          N, C, WeightSize, H, W, grad_data, grad_weight);
 
     return 1;

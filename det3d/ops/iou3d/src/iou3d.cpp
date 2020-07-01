@@ -4,8 +4,8 @@
 #include <cuda.h>
 #include <cuda_runtime_api.h>
 
-#define CHECK_CUDA(x) AT_CHECK(x.type().is_cuda(), #x, " must be a CUDAtensor ")
-#define CHECK_CONTIGUOUS(x) AT_CHECK(x.is_contiguous(), #x, " must be contiguous ")
+#define CHECK_CUDA(x) TORCH_CHECK(x.type().is_cuda(), #x, " must be a CUDAtensor ")
+#define CHECK_CONTIGUOUS(x) TORCH_CHECK(x.is_contiguous(), #x, " must be contiguous ")
 #define CHECK_INPUT(x) CHECK_CUDA(x);CHECK_CONTIGUOUS(x)
 
 #define DIVUP(m,n) ((m) / (n) + ((m) % (n) > 0))
@@ -30,9 +30,9 @@ void nmsNormalLauncher(const float *boxes, unsigned long long * mask, int boxes_
 
 int boxes_overlap_bev_gpu(at::Tensor boxes_a, at::Tensor boxes_b, at::Tensor ans_overlap){
     // params boxes_a: (N, 5) [x1, y1, x2, y2, ry]
-    // params boxes_b: (M, 5) 
+    // params boxes_b: (M, 5)
     // params ans_overlap: (N, M)
-    
+
     CHECK_INPUT(boxes_a);
     CHECK_INPUT(boxes_b);
     CHECK_INPUT(ans_overlap);
@@ -51,9 +51,9 @@ int boxes_overlap_bev_gpu(at::Tensor boxes_a, at::Tensor boxes_b, at::Tensor ans
 
 int boxes_iou_bev_gpu(at::Tensor boxes_a, at::Tensor boxes_b, at::Tensor ans_iou){
     // params boxes_a: (N, 5) [x1, y1, x2, y2, ry]
-    // params boxes_b: (M, 5) 
+    // params boxes_b: (M, 5)
     // params ans_overlap: (N, M)
-    
+
     CHECK_INPUT(boxes_a);
     CHECK_INPUT(boxes_b);
     CHECK_INPUT(ans_iou);
