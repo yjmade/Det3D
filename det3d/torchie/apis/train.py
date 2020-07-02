@@ -281,7 +281,7 @@ def train_detector(model, dataset, cfg, distributed=False, validate=False, logge
 
     # put model on gpus
     if distributed:
-        model = apex.parallel.convert_syncbn_model(model)
+        #model = apex.parallel.convert_syncbn_model(model)
         model = DistributedDataParallel(
             model.cuda(cfg.local_rank),
             device_ids=[cfg.local_rank],

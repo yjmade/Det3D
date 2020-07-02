@@ -3,7 +3,7 @@ import logging
 
 from det3d.builder import build_box_coder
 from det3d.utils.config_tool import get_downsample_factor
-
+import os
 # norm_cfg = dict(type='SyncBN', eps=1e-3, momentum=0.01)
 norm_cfg = None
 
@@ -138,12 +138,12 @@ test_cfg = dict(
 
 # dataset settings
 dataset_type = "KittiDataset"
-data_root = "/data/Datasets/KITTI/Kitti/object"
+data_root = os.environ.get("KITTI_DATA_ROOT", "/data/8-1/datasets/kitti")
 
 db_sampler = dict(
     type="GT-AUG",
     enable=True,
-    db_info_path="/data/Datasets/KITTI/Kitti/object/dbinfos_train.pkl",
+    db_info_path=f"{data_root}/dbinfos_train.pkl",
     sample_groups=[dict(Car=15), dict(Pedestrian=8), dict(Cyclist=8),],
     db_prep_steps=[
         dict(filter_by_min_num_points=dict(Car=5, Pedestrian=5, Cyclist=5)),
@@ -202,8 +202,8 @@ test_pipeline = [
     dict(type="Reformat"),
 ]
 
-train_anno = "/data/Datasets/KITTI/Kitti/object/kitti_infos_train.pkl"
-val_anno = "/data/Datasets/KITTI/Kitti/object/kitti_infos_val.pkl"
+train_anno = f"{data_root}/kitti_infos_train.pkl"
+val_anno = f"{data_root}/kitti_infos_val.pkl"
 test_anno = None
 
 data = dict(
